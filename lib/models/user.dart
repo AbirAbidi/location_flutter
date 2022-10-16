@@ -5,7 +5,8 @@ class EndUser {
     required  this.urlAvatar,
       required this.phone ,
        required this.location,
-     required  this.username
+     required  this.username,
+      this.fav ,
 });
 
   String uid;
@@ -14,6 +15,7 @@ class EndUser {
   String phone;
   String location;
   String username ;
+  List<String>? fav ;
 
   factory EndUser.fromJson(Map<String, dynamic> json) => EndUser(
         uid: json["UID"],
@@ -21,7 +23,8 @@ class EndUser {
         urlAvatar: json["urlAvatar"],
         phone: json["phone"],
         location: json["location"],
-        username: json["username"]
+        username: json["username"],
+        fav: json["fav"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -30,6 +33,7 @@ class EndUser {
         "urlAvatar": urlAvatar,
         "phone":phone,
         "location":location,
-        "username":username
+        "username":username,
+        "fav":fav
       };
 }

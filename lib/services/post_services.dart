@@ -7,9 +7,16 @@ FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class PostServices {
-addPostHouse (EndHouse newHouse)async{
-  await _firestore.collection('Posts').doc().set(newHouse.toJson());
+Future addPostHouse (EndHouse newHouse)async{
+   FirebaseFirestore.instance.collection('Posts').doc().set(newHouse.toJson());
 }
+
+Future fromDocToAuth( EndHouse newHouse, ) async {
+     FirebaseFirestore.instance
+        .collection('Posts')
+        .doc()
+        .set(newHouse.toJson());
+  }
 
 
 
@@ -25,6 +32,24 @@ addPostRoommate (Roommate roommate)async{
 fetchAllPostRoommate()async{
   return  _firestore.collection('Roommate').snapshots();
 }
+
+
+addPostToFav (String PostUid,String uid)async{
+  return _firestore.collection('users').doc(uid).collection('fav').doc(PostUid).update({
+    "fav":PostUid
+}) ;
+}
+
+deletePostFromFav (String PostUid ,String uid)async{
+  return _firestore.collection('users').doc(uid).collection('fav').doc(PostUid).delete();
+}
+
+
+
+
+
+
+
 
 }
 

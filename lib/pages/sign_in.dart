@@ -103,29 +103,71 @@ class _SignINState extends State<SignIN> {
                       height: 60,
                       width: double.infinity,
                        child: CupertinoButton(onPressed: () async { 
-                        if (_emailcntrl.text.trim().isEmpty ||
+                        if (_emailcntrl.text.trim().isEmpty || _passcntrl.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.redAccent,
+                                content:
+                                    Text('Email or Password cannot be empty !')));
+                          }else {
+                         dynamic cred =   FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailcntrl.text, password: _passcntrl.text);
+                          if (cred == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.redAccent,
+                                content:
+                                    Text('Email or Password invalid !')));
+                          }else
+                          
+                          {
+                            Navigator.pushReplacement(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => const HomePage()));}
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      /*  if (_emailcntrl.text.trim().isEmpty ||
                               _passcntrl.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                 duration: Duration(seconds: 3),
                                 backgroundColor: Colors.redAccent,
                                 content:
                                     Text('Email or Password cannot be empty !')));
-                          } 
-                          dynamic creds = await AuthServives().signIn(_emailcntrl.text.trim(), _passcntrl.text);
-                         if (creds == null) {
-                           ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                          } else {
+                          dynamic cred = await AuthServives().loginUser(_emailcntrl.text.trim(), _passcntrl.text);
+                       if (cred == null) {
+                           const snackbar =  SnackBar(
                                       duration: Duration(seconds: 3),
                                       backgroundColor: Colors.redAccent,
                                       content:
-                                          Text('Email or password invalid !')));
+                                          Text('Email or password invalid !'));
                          } else{
-                          AuthServives().signIn(_emailcntrl.text.trim(), _passcntrl.text).then((value) =>Navigator.pushReplacement(
+                          Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute(
-                                      builder: (context) => const HomePage())));
+                                      builder: (context) => const HomePage()));
                                       print('log in successful');
                          }
+                        }*/
+                         
                         },
                        color:const  Color.fromARGB(255, 0, 26, 175) ,
                        child: const Text('Sign in',textAlign: TextAlign.center,style: TextStyle(fontSize: 19,color: Colors.white,fontWeight: FontWeight.w600),) ,

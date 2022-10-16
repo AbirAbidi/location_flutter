@@ -10,6 +10,7 @@ import 'package:location_flutter/services/post_services.dart';
 import 'package:location_flutter/widgets/post_roommate.dart';
 
 import 'home_page.dart';
+dynamic uid =FirebaseAuth.instance.currentUser!.uid;
 TextEditingController _username = TextEditingController();
 TextEditingController _phone = TextEditingController();
 TextEditingController _location = TextEditingController();
@@ -28,6 +29,76 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 24,right: 24,bottom: 10),
+        child: SizedBox(
+                      height: 60,
+                       child: Row(children: [
+                        SizedBox(
+                       width: 170,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                          decoration: BoxDecoration(
+                            
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10) ,
+                            ),
+                          child:const  Center(child: Text('Delete changes',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18,color: Colors.white)),),   
+                                             
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 23,),
+                      InkWell(
+                        onTap: () {
+                          try {
+                           if (_urlAvatar.text.isNotEmpty) {
+                             AuthServives().updateUserUrlAvatar(_urlAvatar.text, uid);
+                           }
+                           if (_username.text.isNotEmpty) {
+                             AuthServives().updateUserUsername(_username.text, uid);
+                           }
+                           if (_phone.text.isNotEmpty) {
+                             AuthServives().updateUserPhone(_phone.text, uid);
+                           }
+                           if (_location.text.isNotEmpty) {
+                             AuthServives().updateUserLocation(_location.text, uid);
+                           }
+
+                           
+                           // AuthServives().updateUserData(_username.text,_phone.text,_location.text,_urlAvatar.text,FirebaseAuth.instance.currentUser!.uid);
+                          Navigator.push(context,
+                 (CupertinoPageRoute(builder: (context) => const HomePage())));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                             const     SnackBar(
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: Colors.redAccent,
+                                    content:
+                                        Text("error accured")));
+                          }
+                          
+                        },
+                        child: SizedBox(
+                         width: 170,
+                          child: Container(
+                          decoration: BoxDecoration(
+                            
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(10) ,
+                            ),
+                          child: const Center(child: Text('Save changes',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18,color: Colors.white)),),   
+                         
+                          ),
+                        ),
+                      ),
+                       ],),
+                     ),
+      ),
               backgroundColor:const Color.fromRGBO(248, 248, 248, 10),
                   resizeToAvoidBottomInset: false,
 
@@ -81,74 +152,23 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     Text('Update your username',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                     TextField(
                       controller: _username,
-                      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                      
                     ),
                     const SizedBox(height: 20,),
                     Text('Update your phone number :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                     TextField(
                       controller: _phone,
-                      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                    
                     ),
                     const SizedBox(height: 20,),
                     Text('Update current location :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                     TextField(
                       controller: _location,
-                      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                     
                     ),
                     
-                   const SizedBox(height: 230,),
-                    SizedBox(
-                    height: 60,
-                     child: Row(children: [
-                      SizedBox(
-                     width: 170,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                        decoration: BoxDecoration(
-                          
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10) ,
-                          ),
-                        child:const  Center(child: Text('Delete changes',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18,color: Colors.white)),),   
-                                           
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 23,),
-                    InkWell(
-                      onTap: () {
-                        try {
-                          AuthServives().updateUserData(_username.text,_phone.text,_location.text,_urlAvatar.text,FirebaseAuth.instance.currentUser!.uid);
-                        Navigator.push(context,
-               (CupertinoPageRoute(builder: (context) => const HomePage())));
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                           const     SnackBar(
-                                  duration: Duration(seconds: 3),
-                                  backgroundColor: Colors.redAccent,
-                                  content:
-                                      Text("error accured")));
-                        }
-                        
-                      },
-                      child: SizedBox(
-                       width: 170,
-                        child: Container(
-                        decoration: BoxDecoration(
-                          
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(10) ,
-                          ),
-                        child: const Center(child: Text('Save changes',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18,color: Colors.white)),),   
-                       
-                        ),
-                      ),
-                    ),
-                     ],),
-                   )
+                 
+                    
             
             
           ],

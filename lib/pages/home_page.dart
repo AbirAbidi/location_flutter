@@ -1,20 +1,20 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
+
 import 'package:location_flutter/pages/favorites.dart';
 import 'package:location_flutter/pages/find_roommate.dart';
 import 'package:location_flutter/pages/messages.dart';
 import 'package:location_flutter/pages/profile.dart';
-import 'package:location_flutter/services/post_services.dart';
+
 import 'package:location_flutter/widgets/post_widget.dart';
 import '../services/auth.dart';
-import '../widgets/post_widget.dart';
+
 int _firstPageInd = 0;
 final List<Widget> _listPosts = [];
 class HomePage extends StatefulWidget {
@@ -145,7 +145,21 @@ class _HomePageState extends State<HomePage> {
               child: FutureBuilder<DocumentSnapshot>(
                 future: AuthServives().getUserData(FirebaseAuth.instance.currentUser!.uid),
                 builder: (context, snapshot) {
-                  return Image.network('${snapshot.data!["urlAvatar"]}');
+                  if (snapshot.hasError) {
+                    return const Text('ERROR');
+                  }else
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const  CircularProgressIndicator();
+                  }
+                  if(snapshot.hasData){
+                    Image.network('${snapshot.data!["urlAvatar"]}');
+                  }
+                  return Center(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [],
+                                            ),
+                                          );
                 }
               ))) ),
           ],
@@ -180,77 +194,86 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(child: Padding(
               padding: const EdgeInsets.only(left: 24,right: 24),
-              child: Column(
-                children: [
-                 const  SizedBox(height: 40,),
-                  SizedBox(
-                          height: 60,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 6,
-                                      offset: const Offset(3, 3), // changes position of shadow
-                                ),
-                              ],
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10) ,
-                              ),   
-                            child: SizedBox(
-                              height: 60,
-                              child: TextField(  
-                                onChanged: (value) {
-                                  setState(() {
-                                    name = value;
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.search,size: 40,color: Color.fromRGBO(157, 157, 158, 100)),
-                                enabledBorder: OutlineInputBorder(
-                                            borderSide: const  BorderSide(
-                                                color: Colors.white),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                           color: Colors.white),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                hintText: 'Search for dream home',hintStyle:const  TextStyle(fontSize: 19,color: Color.fromRGBO(157, 157, 158, 100),fontWeight: FontWeight.w300)),),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                   const  SizedBox(height: 40,),
+                    SizedBox(
+                            height: 60,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 6,
+                                        offset: const Offset(3, 3), // changes position of shadow
+                                  ),
+                                ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10) ,
+                                ),   
+                              child: SizedBox(
+                                height: 60,
+                                child: TextField(  
+                                  onChanged: (value) {
+                                    setState(() {
+                                      name = value;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.search,size: 40,color: Color.fromRGBO(157, 157, 158, 100)),
+                                  enabledBorder: OutlineInputBorder(
+                                              borderSide: const  BorderSide(
+                                                  color: Colors.white),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                             color: Colors.white),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                  hintText: 'Search for dream home',hintStyle:const  TextStyle(fontSize: 19,color: Color.fromRGBO(157, 157, 158, 100),fontWeight: FontWeight.w300)),),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 50,),
-                      // Text(FirebaseAuth.instance.currentUser!.uid),
-
-                         
-                        StreamBuilder<QuerySnapshot>(
-                           stream: FirebaseFirestore.instance.collection('Posts').snapshots(),
-                           builder: ( context,  snapshot) {
-                               if (snapshot.hasError) {
-                                  return Center(child: Column(children:const  [
-                                    Icon(Icons.error,size: 30,color: Colors.red,),
-                                    Text('Something went wrong ! ',style: TextStyle(color: Colors.red),)
-                                  ],),);
-                               }else
-                               if (snapshot.connectionState == ConnectionState.waiting){
-                                  return const  Center(child: CircularProgressIndicator(),);
-                               }
-                            else {
-                                 return ListView.builder(
-                               itemCount:snapshot.data!.docs.length,
-                                shrinkWrap: true,
-                                 itemBuilder: (context,index){
-                                   return  PostWidget();
+                          const SizedBox(height: 50,),
+                        // Text(FirebaseAuth.instance.currentUser!.uid),
+              
+                           
+                          StreamBuilder<QuerySnapshot>(
+                             stream: FirebaseFirestore.instance.collection('Posts').snapshots(),
+                             builder: ( context,  snapshot) {
+                                 if (snapshot.hasError) {
+                                    return Center(child: Column(children:const  [
+                                      Icon(Icons.error,size: 30,color: Colors.red,),
+                                      Text('Something went wrong ! ',style: TextStyle(color: Colors.red),)
+                                    ],),);
+                                 }else
+                                 if (snapshot.connectionState == ConnectionState.waiting){
+                                    return const  Center(child: CircularProgressIndicator(),);
                                  }
-                            );
-                               }
-                           }
-                         )
-                        
-             ] ),
+                              else {
+                                   return ListView.builder(
+                                 itemCount:snapshot.data!.docs.length,
+                                  shrinkWrap: true,
+                                   itemBuilder: (context,index){
+                                     return  PostWidget(
+                                      gouvernate: snapshot.data!.docs[index]["gouvernate"],
+                                      image: snapshot.data!.docs[index]["image"],
+                                      price: snapshot.data!.docs[index]["price"],
+                                      uid: snapshot.data!.docs[index]["UID"],
+                                      info: snapshot.data!.docs[index]["details"],
+                                      location: snapshot.data!.docs[index]["location"],
+                                     );
+                                   }
+                              );
+                                 }
+                             }
+                           )
+                          
+                           ] ),
+              ),
             )),
           );
 

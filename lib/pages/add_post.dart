@@ -85,31 +85,31 @@ class _AddPostState extends State<AddPost> {
                       Text('Add informations :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                       TextField(
                         controller: _info,
-                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                        
                       ),
                       const SizedBox(height: 20,),
                       Text('Add your phone number :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                       TextField(
                         controller: _phone,
-                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                        
                       ),
                       const SizedBox(height: 20,),
                       Text('Add location :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                       TextField(
                         controller: _location,
-                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                        
                       ),
                       const SizedBox(height: 20,),
                       Text('Add gouvernate :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                       TextField(
                         controller: _gouvernate,
-                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                       
                       ),
                       const SizedBox(height: 20,),
                       Text('Add monthly price :',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.grey.shade700)),SizedBox(height: 10,),
                       TextField(
                         controller: _price,
-                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                        
                       ),
                      const SizedBox(height: 50,),
                       SizedBox(
@@ -133,10 +133,36 @@ class _AddPostState extends State<AddPost> {
                         ),
                       ),
                       const SizedBox(width: 23,),
-                      DisabledButton(isDisabled: false, onClick: (){
-                          EndHouse newHouse = EndHouse(details: _info.text, uid: userUid, phone: _phone.text, location: _location.text, gouvernate: _gouvernate.text, price: _price.text, image: _image.text);
-                          
-                      })
+                      SizedBox(
+                        width: 170,
+                        child: InkWell(
+                          onTap: () {
+                          // Navigator.pop(context);
+                            EndHouse newHouse = EndHouse(details: _info.text, uid: userUid, phone: _phone.text, location: _location.text, gouvernate: _gouvernate.text, price: _price.text, image: _image.text);
+                          try {
+                            PostServices().fromDocToAuth(newHouse);
+                            print('worked');
+                            Navigator.push(context,
+               (CupertinoPageRoute(builder: (context) => const HomePage())));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                           const     SnackBar(
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.redAccent,
+                                  content:
+                                      Text("error accured")));
+                          }
+                            
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(                             
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10) ,
+                              ),
+        child: const  Center(child: Text('Share post',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18,color: Colors.white)),),
+      ),
+                        ),
+                      )
                        ],),
                      )
               

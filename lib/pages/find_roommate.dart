@@ -3,10 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:location_flutter/models/roommate.dart';
 import 'package:location_flutter/pages/home_page.dart';
 import 'package:location_flutter/widgets/post_roommate.dart';
 
 import '../services/post_services.dart';
+import '../widgets/post_widget.dart';
 import 'add_roommate_post.dart';
 
 class FindRoommate extends StatefulWidget {
@@ -82,7 +84,7 @@ class _FindRoommateState extends State<FindRoommate> {
           const SizedBox(height: 40,),
           //widget
           StreamBuilder<QuerySnapshot>(
-              stream: PostServices().fetchAllPostHouse(),
+              stream: FirebaseFirestore.instance.collection('Roommate').snapshots(),
               builder: ( context,  snapshot) {
                 if (snapshot.hasError) {
                   return Center(child: Column(children:const  [
@@ -94,13 +96,63 @@ class _FindRoommateState extends State<FindRoommate> {
                   return const  Center(child: CircularProgressIndicator(),);
                 }
                 else {
-                  return ListView.builder(
+                  if (snapshot.hasData){
+                    return ListView.builder(
                       itemCount:snapshot.data!.docs.length,
                       shrinkWrap: true,
                       itemBuilder: (context,index){
-                        return  PostRoommate();
+                     Roommate r = Roommate(info: snapshot.data!.docs[index]['info'], uid: snapshot.data!.docs[index]['uid'],location:snapshot.data!.docs[index]['location']);
+                        return  StreamBuilder<DocumentSnapshot>(
+                          stream:  FirebaseFirestore.instance.collection('Roommate').doc().snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError ) {
+                                        Column( children :[
+                                       const Icon(
+                                         Icons.error_outline,
+                                           color: Colors.red,
+                                           size: 60,
+                                          ),
+                                       Padding(
+                                          padding: const EdgeInsets.only(top: 16),
+                                           child: Text('Error: ${snapshot.error}'),
+                                              ),
+                                            ]);
+                                          }else 
+                                          if(snapshot.hasData){
+                                            return RoommateWidget(info: r.info, uid: r.uid,location: r.location,);
+                                          }else
+                                          if(snapshot.connectionState == ConnectionState.waiting){
+                                         
+                                           Column( children :const [
+                                              SizedBox(
+                                                width: 60,
+                                                height: 60,
+                                                child: CircularProgressIndicator(),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 16),
+                                                child: Text('Awaiting result...'),
+                                              ),
+                                            ]);
+                                          }return Center(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: children,
+                                            ),
+                                          );
+                            
+                          }
+                        );
                       }
                   );
+                  } 
+                  return Center(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: children,
+                                            ),
+                                          );
+                  
                 }
               }
           )

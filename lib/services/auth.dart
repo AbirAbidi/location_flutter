@@ -26,10 +26,10 @@ class AuthServives {
 
   Future loginUser(String email, String password) async {
     try {
-      _auth
+     UserCredential userCredential = await _auth
           .signInWithEmailAndPassword(email: email, password: password);
-    //  User firebaseUser = endUserCredentials.user!;
-      //return _userFirebaseUser(firebaseUser);
+   //  User firebaseUser = endUserCredentials.user!;
+  //    return _userFirebaseUser(firebaseUser);
     } catch (err, stacktrace) {
       log('user login failed :: $err');
       log('user login failed :: $stacktrace');
@@ -92,7 +92,31 @@ class AuthServives {
       "username" : username,
       "phone" : phone,
       "location": location ,
-      "url avatar":urlAvatar
+      "urlAvatar":urlAvatar
+    });
+  }
+
+
+
+
+   Future updateUserUsername(String username , String uid)async{
+     await _firebaseFirestore.collection('users').doc(uid).update({
+      "username" : username,
+    });
+  }
+  Future updateUserPhone(String phone , String uid)async{
+     await _firebaseFirestore.collection('users').doc(uid).update({
+      "phone" : phone,
+    });
+  }
+    Future updateUserLocation(String location , String uid)async{
+     await _firebaseFirestore.collection('users').doc(uid).update({
+      "location" : location,
+    });
+  }
+ Future updateUserUrlAvatar(String urlAvatar , String uid)async{
+     await _firebaseFirestore.collection('users').doc(uid).update({
+      "urlAvatar" : urlAvatar,
     });
   }
 

@@ -6,7 +6,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:location_flutter/pages/text_roommate_post.dart';
 
 class DetailsPostRoommate extends StatefulWidget {
-  const DetailsPostRoommate({Key? key}) : super(key: key);
+  final urlAvatar ;
+  final details ;
+  final name;
+  const DetailsPostRoommate({Key? key, this.urlAvatar, this.details, this.name}) : super(key: key);
 
   @override
   State<DetailsPostRoommate> createState() => _DetailsPostRoommateState();
@@ -82,19 +85,19 @@ class _DetailsPostRoommateState extends State<DetailsPostRoommate> {
                     child: SizedBox.fromSize(
                       size:const  Size.fromRadius(40),
                       child: Image.network(      
-                        '',
+                        widget.urlAvatar,
                         ),
                     ),
                   ),
                   const SizedBox(width: 10,),
-                  const Text('Don Doe',style: TextStyle(fontSize: 25,fontWeight: FontWeight.w500),)
+                   Text('${widget.name}',style:const  TextStyle(fontSize: 25,fontWeight: FontWeight.w500),)
             ],),
             
         ),
         const SizedBox(height: 30,),
         Expanded
         (
-          child: Container(
+          child: SizedBox(
             width: double.maxFinite,
            // height: double.maxFinite,
           //  color: Colors.red,
@@ -103,7 +106,7 @@ class _DetailsPostRoommateState extends State<DetailsPostRoommate> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Flexible(child: Text('...',style: TextStyle(fontSize: 17),))
+                Flexible(child: Text(widget.details,style: const TextStyle(fontSize: 17),))
               ],),
             ),
           ),

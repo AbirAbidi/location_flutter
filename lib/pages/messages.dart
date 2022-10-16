@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:location_flutter/widgets/message_widget.dart';
 
+import '../widgets/post_widget.dart';
 import 'home_page.dart';
-
+dynamic uid = FirebaseAuth.instance.currentUser!.uid;
 class Messages extends StatefulWidget {
   const Messages({Key? key}) : super(key: key);
 
@@ -39,20 +42,39 @@ class _MessagesState extends State<Messages> {
                             ),
                   ),
                   const SizedBox(width: 20,),
-                  ClipOval(
-                    child: SizedBox.fromSize(
-                      size:const  Size.fromRadius(40),
-                      child: Image.network(      
-                        'https://randomuser.me/api/portraits/men/61.jpg',
+                  StreamBuilder<DocumentSnapshot>(
+                    stream:  FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
+                    builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }else 
+                    
+                      if (snapshot.hasData) {
+                        return ClipOval(
+                        child: SizedBox.fromSize(
+                          size:const  Size.fromRadius(40),
+                          child: Image.network(      
+                            snapshot.data!["urlAvatar"],
+                            ),
                         ),
-                    ),
+                      );
+                      }
+                       return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            ),
+          );
+                 
+                      
+                    }
                   ),
                   const SizedBox(width: 10,),
                   const Text('Messages',style: TextStyle(fontSize: 25,fontWeight: FontWeight.w500),)
             ],),
         ),
           const SizedBox(height: 20,),
-          const MessageWidget()
+          //const MessageWidget()
       ],)
       ),
     );
